@@ -14,9 +14,6 @@ Some of the checklists in this doc are for **C4 (🐺)** and some of them are fo
 
 # Contest setup
 
-## 🐺 C4: Set up repos
-- [ ] Add sponsor to this private repo with 'maintain' level access.
-
 ## ⭐️ Sponsor: Provide contest details
 
 Under "SPONSORS ADD INFO HERE" heading below, include the following:
@@ -48,7 +45,7 @@ Under "SPONSORS ADD INFO HERE" heading below, include the following:
 
 ---
 
-# Swivel Finance v3 contest details
+# Swivel v3 contest details
 - $33,250 USDC main award pot
 - $1,750 USDC gas optimization award pot
 - Join [C4 Discord](https://discord.gg/code4rena) to register
