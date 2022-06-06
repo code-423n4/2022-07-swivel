@@ -48,7 +48,7 @@ Under "SPONSORS ADD INFO HERE" heading below, include the following:
 
 ---
 
-# Swivel Finance contest details
+# Swivel Finance v3 contest details
 - $33,250 USDC main award pot
 - $1,750 USDC gas optimization award pot
 - Join [C4 Discord](https://discord.gg/code4rena) to register
