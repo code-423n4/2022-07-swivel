@@ -52,7 +52,7 @@ Under "SPONSORS ADD INFO HERE" heading below, include the following:
 - Submit findings [using the C4 form](https://code4rena.com/contests/2022-07-swivel-contest/submit)
 - [Read our guidelines for more details](https://docs.code4rena.com/roles/wardens)
 - Starts July 5, 2022 20:00 UTC
-- Ends July 8, 2022 19:59 UTC
+- Ends July 8, 2022 20:00 UTC
 
 This repo will be made public before the start of the contest. (C4 delete this line when made public)
 
