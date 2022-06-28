@@ -54,6 +54,4 @@ Under "SPONSORS ADD INFO HERE" heading below, include the following:
 - Starts July 5, 2022 20:00 UTC
 - Ends July 8, 2022 20:00 UTC
 
-This repo will be made public before the start of the contest. (C4 delete this line when made public)
-
 [ ⭐️ SPONSORS ADD INFO HERE ]
