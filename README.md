@@ -51,7 +51,7 @@ Under "SPONSORS ADD INFO HERE" heading below, include the following:
 - Join [C4 Discord](https://discord.gg/code4rena) to register
 - Submit findings [using the C4 form](https://code4rena.com/contests/2022-07-swivel-contest/submit)
 - [Read our guidelines for more details](https://docs.code4rena.com/roles/wardens)
-- Starts July 5, 2022 20:00 UTC
-- Ends July 8, 2022 20:00 UTC
+- Starts July 12, 2022 20:00 UTC
+- Ends July 15, 2022 20:00 UTC
 
 [ ⭐️ SPONSORS ADD INFO HERE ]
