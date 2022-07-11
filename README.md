@@ -60,6 +60,11 @@ A zcToken (ERC-5095) can be redeemed 1-1 for underlying upon maturity. After mat
 
 An nToken (non-standard contract balance) is a balance within a users `vault`(vault.notional) within VaultTracker.sol. nTokens (notional balance) represent a deposit in an underlying protocol (compound), and accrue the interest from this deposit until maturity. This interest can be redeemed at any time.
 
+### **Custom Errors**
+We recently implemented custom errors which follow a generic pattern, `error Exception(uint8, uint256, uint256, address, address);`. This allows us to set off-chain error codes, and pass through all relevant information and comparisons that caused the revert(protocol, two amounts to compare, two addresses to compare).
+
+A comprehensive overview of all our errors is available in the `errors.txt` file in each contract's folder.
+
 
 ## Important Note:
 
