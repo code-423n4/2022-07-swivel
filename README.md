@@ -94,8 +94,6 @@ With all this established, we are likely contesting / rejecting most admin centr
 | VaultTracker |[Link](https://github.com/code-423n4/2022-07-swivel/blob/main/VaultTracker/VaultTracker.sol)| 252 | Same as Marketplace.sol | Same as Swivel.sol |
 | Creator |[Link](https://github.com/code-423n4/2022-07-swivel/blob/main/Creator/Creator.sol)| 66 | None | None | 
 
-// These need to be updated with the live contest repo links
-
 ## **Swivel:**
 Swivel.sol handles all fund custody, and most all user interaction methods are on Swivel.sol (`initiate`,`exit`,`splitUnderying`,`combineTokens`, `redeemZcTokens`, `redeemVaultInterest`). We categorize all order interactions as either `payingPremium` or `receivingPremium` depending on the params (`vault` & `exit`) of an order filled, and whether a user calls `initiate` or `exit`. 
 
