@@ -25,11 +25,11 @@ Our Testing Suite: https://github.com/Swivel-Finance/gost/tree/v3
 
 Old v2 Overview (ETHOnline): https://www.youtube.com/watch?v=hI0Uwd4Xayg 
 
-### **New In v3**
+## **New In v3**
 
 As a general focus of our audit, we would like to highlight our new features in Swivel v3. 
 
-#### Protocol Integrations
+### Protocol Integrations
 
 The focus of v3 is to open our protocol to nearly all large money-market integrations. This largely includes:
 - Include a "protocol" enum, `p` as part of our `markets` mapping
@@ -37,17 +37,18 @@ The focus of v3 is to open our protocol to nearly all large money-market integra
 - Creating a library, `Compounding.sol` which takes a cToken address and protocol enum and reads the exchangeRate for given external cToken integrations
 - Including solmate / t11s libraries for optimized Compound protocol and Rari protocol `exchangeRate` reads
 
-#### 5095
+### 5095
 
 Another focus of v3 was the integration of [EIP-5095](https://github.com/ethereum/EIPs/pull/5095). We wanted to ensure compliance and demonstrate how one could integrate a 5095 with some backwards compatable infrastructure for authorized redemptions. That said, 5095 is in flux and not finalized and 100% compliance is not to be expected. (e.g. Our previews currently return 0 before maturity, an old version of 5095.) This largely includes:
 - A `ZcToken.sol` which follows the 5095 interface, and redemptions that call an authorized `IRedeemer.authRedeem`
 - The addition of `MarketPlace.authRedeem` which acts as our IRedeemer and burns zcTokens then calls and authorized `Swivel.authRedeem`
 - The addition of `Swivel.authRedeem` which withdraws from an external protocol and then transfers an ERC20 out
 
-#### Marketplace Split
+### Marketplace Split
 
 Alongside these additions, the bytecode of `Marketplace.sol` bloated, and we needed to split the direct creation of new contracts into `Creator.sol` which acts as an external contract to deploy new markets.
 
+## Other Information
 ### **Order Path:**
 A taker initiates their own position using `initiate` or `exit` on Swivel.sol, in the process filling another user's order. Swivel.sol handles fund custody and deposits/withdrawals from underlying protocols (compound). Params are routed to Marketplace.sol and according to the `underlying` and `maturity` of an order, a market is identified (asset-maturity combination), and zcTokens and nTokens are minted/burnt/exchanged within that market according to the params.
 
@@ -91,6 +92,8 @@ With all this established, we are likely contesting / rejecting most admin centr
 | Marketplace  |[Link](https://github.com/Swivel-Finance/gost/blob/v2/test/marketplace/MarketPlace.sol)| 259 | [Abstracts.sol](https://github.com/Swivel-Finance/gost/blob/v2/test/marketplace/Abstracts.sol) |
 | VaultTracker |[Link](https://github.com/Swivel-Finance/gost/blob/v2/test/vaulttracker/VaultTracker.sol)| 251 | [Abstracts.sol](https://github.com/Swivel-Finance/gost/blob/v2/test/vaulttracker/Abstracts.sol) | [CToken.sol](https://github.com/compound-finance/compound-protocol/blob/master/contracts/CToken.sol) |
 | Creator |[Link](https://github.com/Swivel-Finance/gost/blob/v2/test/vaulttracker/VaultTracker.sol)| 251 | [Abstracts.sol](https://github.com/Swivel-Finance/gost/blob/v2/test/vaulttracker/Abstracts.sol) | [CToken.sol](https://github.com/compound-finance/compound-protocol/blob/master/contracts/CToken.sol) |
+
+// These need to be updated with the live contest repo links
 
 ## **Swivel:**
 Swivel.sol handles all fund custody, and most all user interaction methods are on Swivel.sol (`initiate`,`exit`,`splitUnderying`,`combineTokens`, `redeemZcTokens`, `redeemVaultInterest`). We categorize all order interactions as either `payingPremium` or `receivingPremium` depending on the params (`vault` & `exit`) of an order filled, and whether a user calls `initiate` or `exit`. 
