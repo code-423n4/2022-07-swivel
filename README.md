@@ -2,7 +2,7 @@
 - $33,250 USDC main award pot
 - $1,750 USDC gas optimization award pot
 - Join [C4 Discord](https://discord.gg/code4rena) to register
-- Submit findings [using the C4 form](https://code4rena.com/contests/2022-07-swivel-contest/submit)
+- Submit findings [using the C4 form](https://code4rena.com/contests/2022-07-swivel-v3-contest/submit)
 - [Read our guidelines for more details](https://docs.code4rena.com/roles/wardens)
 - Starts July 12, 2022 20:00 UTC
 - Ends July 15, 2022 20:00 UTC
