@@ -85,13 +85,14 @@ That said, we retain multiple methods for approvals / withdrawals / fees / pausi
 
 With all this established, we are likely contesting / rejecting most admin centralization issues, unless there are remediations which do not break the ethos of our early / safeguarded launch.
 
+
 # Smart Contracts 
 | **Contracts**    | **Link** | **LOC** | **LIBS** | **External** |
 |--------------|------|------|------|------|
-| Swivel       |[Link](https://github.com/Swivel-Finance/gost/blob/v2/test/swivel/Swivel.sol)| 486 | [Abstracts.sol](https://github.com/Swivel-Finance/gost/blob/v2/test/swivel/Abstracts.sol), [Hash.sol](https://github.com/Swivel-Finance/gost/blob/v2/test/swivel/Hash.sol), [Sig.sol](https://github.com/Swivel-Finance/gost/blob/v2/test/swivel/Sig.sol) | [CToken.sol](https://github.com/compound-finance/compound-protocol/blob/master/contracts/CToken.sol) |
-| Marketplace  |[Link](https://github.com/Swivel-Finance/gost/blob/v2/test/marketplace/MarketPlace.sol)| 259 | [Abstracts.sol](https://github.com/Swivel-Finance/gost/blob/v2/test/marketplace/Abstracts.sol) |
-| VaultTracker |[Link](https://github.com/Swivel-Finance/gost/blob/v2/test/vaulttracker/VaultTracker.sol)| 251 | [Abstracts.sol](https://github.com/Swivel-Finance/gost/blob/v2/test/vaulttracker/Abstracts.sol) | [CToken.sol](https://github.com/compound-finance/compound-protocol/blob/master/contracts/CToken.sol) |
-| Creator |[Link](https://github.com/Swivel-Finance/gost/blob/v2/test/vaulttracker/VaultTracker.sol)| 251 | [Abstracts.sol](https://github.com/Swivel-Finance/gost/blob/v2/test/vaulttracker/Abstracts.sol) | [CToken.sol](https://github.com/compound-finance/compound-protocol/blob/master/contracts/CToken.sol) |
+| Swivel       |[Link](https://github.com/code-423n4/2022-07-swivel/blob/main/Swivel/Swivel.sol)| 765 | [Interfaces.sol](https://github.com/code-423n4/2022-07-swivel/blob/main/Swivel/Interfaces.sol), [Hash.sol](https://github.com/code-423n4/2022-07-swivel/blob/main/Swivel/Hash.sol), [Sig.sol](https://github.com/code-423n4/2022-07-swivel/blob/main/Swivel/Sig.sol), [Safe.sol](https://github.com/code-423n4/2022-07-swivel/blob/main/Swivel/Safe.sol) | [CToken.sol](https://github.com/compound-finance/compound-protocol/blob/master/contracts/CToken.sol), [AToken.sol](https://github.com/aave/protocol-v2/blob/master/contracts/protocol/tokenization/AToken.sol), [EToken.sol](https://github.com/euler-xyz/euler-contracts/blob/master/contracts/modules/EToken.sol), [yToken.sol](https://github.com/yearn/yearn-vaults/blob/main/contracts/yToken.sol), [ERC-4626](https://github.com/Rari-Capital/solmate/blob/main/src/mixins/ERC4626.sol)  |
+| Marketplace  |[Link](https://github.com/code-423n4/2022-07-swivel/blob/main/Marketplace/MarketPlace.sol)| 346 | [Interfaces.sol](https://github.com/code-423n4/2022-07-swivel/blob/main/Marketplace/Interfaces.sol), [Compounding.sol](https://github.com/code-423n4/2022-07-swivel/blob/main/Marketplace/Compounding.sol), [LibCompound.sol](https://github.com/code-423n4/2022-07-swivel/blob/main/Marketplace/LibCompound.sol), [LibFuse.sol](https://github.com/code-423n4/2022-07-swivel/blob/main/Marketplace/LibFuse.sol) | Same as Swivel.sol |
+| VaultTracker |[Link](https://github.com/code-423n4/2022-07-swivel/blob/main/VaultTracker/VaultTracker.sol)| 252 | Same as Marketplace.sol | Same as Swivel.sol |
+| Creator |[Link](https://github.com/code-423n4/2022-07-swivel/blob/main/Creator/Creator.sol)| 66 | None | None | 
 
 // These need to be updated with the live contest repo links
 
