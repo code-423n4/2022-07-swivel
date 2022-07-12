@@ -95,13 +95,13 @@ contract MarketPlace {
     if (block.timestamp < m) { revert Exception(24, block.timestamp, m, address(0), address(0)); }
 
     // set the base maturity cToken exchange rate at maturity to the current cToken exchange rate
-    uint256 exchangeRate = Compounding.exchangeRate(p, market.cTokenAddr);
-    markets[p][u][m].maturityRate = exchangeRate;
+    uint256 rate = Compounding.exchangeRate(p, market.cTokenAddr);
+    markets[p][u][m].maturityRate = rate;
 
     // NOTE we don't check the return of this simple operation
-    IVaultTracker(market.vaultTracker).matureVault(exchangeRate);
+    IVaultTracker(market.vaultTracker).matureVault(rate);
 
-    emit Mature(p, u, m, exchangeRate, block.timestamp);
+    emit Mature(p, u, m, rate, block.timestamp);
 
     return true;
   }
@@ -218,9 +218,9 @@ contract MarketPlace {
   function calculateReturn(uint8 p, address u, uint256 m, uint256 a) internal view returns (uint256) {
     Market memory market = markets[p][u][m];
 
-    uint256 exchangeRate = Compounding.exchangeRate(p, market.cTokenAddr);
+    uint256 rate = Compounding.exchangeRate(p, market.cTokenAddr);
 
-    return (a * exchangeRate) / market.maturityRate;
+    return (a * rate) / market.maturityRate;
   }
 
   /// @notice Return the compounding token address for a given market
@@ -235,7 +235,7 @@ contract MarketPlace {
   /// @notice Return the exchangeRate for a given protocol's compounding token
   /// @param p Protocol Enum value associated with this market
   /// @param c Compounding token address associated with the market
-  function getExchangeRate(uint8 p, address c) external view returns (uint256) {
+  function exchangeRate(uint8 p, address c) external view returns (uint256) {
       return Compounding.exchangeRate(p, c);
   }
 
