@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+// In this codebase, Marketplace.sol acts as the redeemer
 interface IRedeemer {
     struct Market {
         address cTokenAddr;

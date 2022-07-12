@@ -48,7 +48,7 @@ library Compounding {
   /// @param p Protocol Enum value
   /// @param c Compounding token address
   function underlying(uint8 p, address c) internal view returns (address) {
-    if (p == uint8(Protocols.Compound)) { // TODO is Rari a drop in here?
+    if (p == uint8(Protocols.Compound)) {
       return ICompoundToken(c).underlying();
     } else if (p == uint8(Protocols.Rari)) {
       return ICompoundToken(c).underlying();
@@ -66,10 +66,10 @@ library Compounding {
   /// @param p Protocol Enum value
   /// @param c Compounding token address
   function exchangeRate(uint8 p, address c) internal view returns (uint256) {
-    if (p == uint8(Protocols.Compound)) { // TODO is Rari a drop in here?
-      return LibCompound.viewExchangeRate(CERC20(c));
-    } else if (p == uint8(Protocols.Rari)) {
-      return LibFuse.viewExchangeRate(CERC20(c));
+    if (p == uint8(Protocols.Compound)) {
+      return LibCompound.viewExchangeRate(ICERC20(c));
+    } else if (p == uint8(Protocols.Rari)) { 
+      return LibFuse.viewExchangeRate(ICERC20(c));
     } else if (p == uint8(Protocols.Yearn)) {
       return IYearnVault(c).pricePerShare();
     } else if (p == uint8(Protocols.Aave)) {
