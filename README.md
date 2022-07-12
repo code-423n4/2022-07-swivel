@@ -93,6 +93,7 @@ With all this established, we are likely contesting / rejecting most admin centr
 | Marketplace  |[Link](https://github.com/code-423n4/2022-07-swivel/blob/main/Marketplace/MarketPlace.sol)| 346 | [Interfaces.sol](https://github.com/code-423n4/2022-07-swivel/blob/main/Marketplace/Interfaces.sol), [Compounding.sol](https://github.com/code-423n4/2022-07-swivel/blob/main/Marketplace/Compounding.sol), [LibCompound.sol](https://github.com/code-423n4/2022-07-swivel/blob/main/Marketplace/LibCompound.sol), [LibFuse.sol](https://github.com/code-423n4/2022-07-swivel/blob/main/Marketplace/LibFuse.sol) | Same as Swivel.sol |
 | VaultTracker |[Link](https://github.com/code-423n4/2022-07-swivel/blob/main/VaultTracker/VaultTracker.sol)| 252 | Same as Marketplace.sol | Same as Swivel.sol |
 | Creator |[Link](https://github.com/code-423n4/2022-07-swivel/blob/main/Creator/Creator.sol)| 66 | None | None | 
+| ZcToken |[Link](https://github.com/code-423n4/2022-07-swivel/blob/main/Creator/ZcToken.sol)| 66 | None | None | 
 
 ## **Swivel:**
 Swivel.sol handles all fund custody, and most all user interaction methods are on Swivel.sol (`initiate`,`exit`,`splitUnderying`,`combineTokens`, `redeemZcTokens`, `redeemVaultInterest`). We categorize all order interactions as either `payingPremium` or `receivingPremium` depending on the params (`vault` & `exit`) of an order filled, and whether a user calls `initiate` or `exit`. 

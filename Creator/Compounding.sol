@@ -12,10 +12,12 @@ interface IErc4626 {
 }
 
 interface ICompoundToken {
+  // TODO comment
   function exchangeRateCurrent() external view returns(uint256);
 }
 
 interface IYearnVault {
+  // TODO comment
   function pricePerShare() external view returns (uint256);
 }
 
@@ -25,6 +27,7 @@ interface IAavePool {
 }
 
 interface IAaveToken {
+  // TODO comments
   function POOL() external view returns (address);
   function UNDERLYING_ASSET_ADDRESS() external view returns (address);
 }
@@ -38,7 +41,7 @@ library Compounding {
   /// @param p Protocol Enum value
   /// @param c Compounding token address
   function exchangeRate(uint8 p, address c) internal view returns (uint256) {
-    if (p == uint8(Protocols.Compound)) {
+    if (p == uint8(Protocols.Compound)) { // TODO is Rari a drop in here?
       return LibCompound.viewExchangeRate(ICERC20(c));
     } else if (p == uint8(Protocols.Rari)) { 
       return LibFuse.viewExchangeRate(ICERC20(c));

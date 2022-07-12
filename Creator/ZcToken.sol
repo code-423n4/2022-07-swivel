@@ -1,105 +1,156 @@
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.4;
 
-/**
-  ZcToken is a mock which records arguments passed to its methods as well as
-  provides setters allowing us to dictate method return values
-*/
+import "./Erc20.sol";
+import "./Compounding.sol";
+import "./IERC5095.sol";  
+import "./IRedeemer.sol";
 
-pragma solidity 0.8.13;
+// Utilizing an external custody contract to allow for backwards compatability with some projects.
+// Assumes interest generated post maturity using an internal Compounding library.
+contract ZcToken is Erc20, IERC5095 {
+    /// @dev unix timestamp when the ERC5095 token can be redeemed
+    uint256 public override immutable maturity;
+    /// @dev address of the ERC20 token that is returned on ERC5095 redemption
+    address public override immutable underlying;
+    /// @dev uint8 associated with a given protocol in Swivel
+    uint8 public immutable protocol;
+    
+    /////////////OPTIONAL///////////////// (Allows the calculation and distribution of yield post maturity)
+    /// @dev address of a cToken
+    address public immutable cToken;
+    /// @dev address and interface for an external custody contract (necessary for some project's backwards compatability)
+    IRedeemer public immutable redeemer;
 
-contract ZcToken {
-  // a struct to hold the arguments passed to transferFrom
-  struct TransferFromArgs {
-    address to;
-    uint256 amount;
-  }
+    error Maturity(uint256 timestamp);  
 
-  // mapping of arguments sent to burn. key is the passed in address.
-  mapping (address => uint256) public burnCalled;
-  // mapping of arguments sent to mint. key is the passed in address.
-  mapping (address => uint256) public mintCalled;
-  // mapping of arguments sent to transferFrom. key is passed from address.
-  mapping (address => TransferFromArgs) public transferFromCalled;
+    error Approvals(uint256 approved, uint256 amount);
 
-  uint8 public protocol;
-  address private underlyingReturn;
-  uint256 private maturityReturn;
-  address public cToken;
-  address public redeemer;
-  string public name;
-  string public symbol;
-  uint8 public decimals;
-  // a boolean flag which allows us to dictate the return of burn().
-  bool private burnReturn;
-  // a boolean flag which allows us to dictate the return of mint().
-  bool private mintReturn;
-  // a boolean flag which allows us to dictate the return of transferFrom().
-  bool private transferFromReturn;
+    error Authorized(address owner);
 
-  /// @param p Protocol Enum value
-  /// @param u Underlying
-  /// @param m Maturity
-  /// @param c Compounding token
-  /// @param r Redeeming contract address
-  /// @param n Name
-  /// @param s Symbol
-  /// @param d Decimals
-  constructor(uint8 p, address u, uint256 m, address c, address r, string memory n, string memory s, uint8 d) {
-    protocol = p;
-    underlyingReturn = u;
-    maturityReturn = m;
-    cToken = c;
-    redeemer = r;
-    name = n;
-    symbol = s;
-    decimals = d;
-  }
+    constructor(uint8 _protocol, address _underlying, uint256 _maturity, address _cToken, address _redeemer, string memory _name, string memory _symbol, uint8 _decimals) 
+    Erc20( _name, _symbol, _decimals) {
+        protocol = _protocol;
+        underlying = _underlying;
+        maturity = _maturity;
+        cToken = _cToken;
+        redeemer = IRedeemer(_redeemer);
+    }
 
-  function burnReturns(bool b) public {
-    burnReturn = b;
-  }
+    /// @notice Post maturity converts an amount of principal tokens to an amount of underlying that would be returned. Returns 0 pre-maturity.
+    /// @param principalAmount The amount of principal tokens to convert
+    /// @return underlyingAmount The amount of underlying tokens returned by the conversion
+    function convertToUnderlying(uint256 principalAmount) external override view returns (uint256 underlyingAmount){
+        if (block.timestamp < maturity) {
+            return 0;
+        }
+        return (principalAmount * IRedeemer(redeemer).getExchangeRate(protocol, cToken) / IRedeemer(redeemer).markets(protocol, underlying, maturity).maturityRate);
+    }
+    /// @notice Post maturity converts a desired amount of underlying tokens returned to principal tokens needed. Returns 0 pre-maturity.
+    /// @param underlyingAmount The amount of underlying tokens to convert
+    /// @return principalAmount The amount of principal tokens returned by the conversion
+    function convertToPrincipal(uint256 underlyingAmount) external override view returns (uint256 principalAmount){
+        if (block.timestamp < maturity) {
+            return 0;
+        }
+        return (underlyingAmount * IRedeemer(redeemer).markets(protocol, underlying, maturity).maturityRate / IRedeemer(redeemer).getExchangeRate(protocol, cToken));
+    }
+    /// @notice Post maturity calculates the amount of principal tokens that `owner` can redeem. Returns 0 pre-maturity.
+    /// @param owner The address of the owner for which redemption is calculated
+    /// @return maxPrincipalAmount The maximum amount of principal tokens that `owner` can redeem.
+    function maxRedeem(address owner) external override view returns (uint256 maxPrincipalAmount){
+        if (block.timestamp < maturity) {
+            return 0;
+        }
+        return (balanceOf[owner]);
+    }
+    /// @notice Post maturity simulates the effects of redeemption at the current block. Returns 0 pre-maturity.
+    /// @param principalAmount the amount of principal tokens redeemed in the simulation
+    /// @return underlyingAmount The maximum amount of underlying returned by `principalAmount` of PT redemption
+    function previewRedeem(uint256 principalAmount) external override view returns (uint256 underlyingAmount){
+        if (block.timestamp < maturity) {
+            return 0;
+        }
+        return (principalAmount * IRedeemer(redeemer).getExchangeRate(protocol, cToken) / IRedeemer(redeemer).markets(protocol, underlying, maturity).maturityRate);
+    }
+    /// @notice Post maturity calculates the amount of underlying tokens that `owner` can withdraw. Returns 0 pre-maturity.
+    /// @param  owner The address of the owner for which withdrawal is calculated
+    /// @return maxUnderlyingAmount The maximum amount of underlying tokens that `owner` can withdraw.
+    function maxWithdraw(address owner) external override view returns (uint256 maxUnderlyingAmount){
+        if (block.timestamp < maturity) {
+            return 0;
+        }
+        return (balanceOf[owner] * IRedeemer(redeemer).getExchangeRate(protocol, cToken) / IRedeemer(redeemer).markets(protocol, underlying, maturity).maturityRate);
+    }
+    /// @notice Post maturity simulates the effects of withdrawal at the current block. Returns 0 pre-maturity.
+    /// @param underlyingAmount the amount of underlying tokens withdrawn in the simulation
+    /// @return principalAmount The amount of principal tokens required for the withdrawal of `underlyingAmount`
+    function previewWithdraw(uint256 underlyingAmount) external override view returns (uint256 principalAmount){
+        if (block.timestamp < maturity) {
+            return 0;
+        }
+        return (underlyingAmount * IRedeemer(redeemer).markets(protocol, underlying, maturity).maturityRate / IRedeemer(redeemer).getExchangeRate(protocol, cToken));
+    }
+    /// @notice At or after maturity, Burns principalAmount from `owner` and sends exactly `underlyingAmount` of underlying tokens to `receiver`.
+    /// @param underlyingAmount The amount of underlying tokens withdrawn
+    /// @param receiver The receiver of the underlying tokens being withdrawn
+    /// @return principalAmount The amount of principal tokens burnt by the withdrawal
+    function withdraw(uint256 underlyingAmount, address receiver, address holder) external override returns (uint256 principalAmount){
+        uint256 previewAmount = this.previewWithdraw(underlyingAmount);
+        // If maturity is not yet reached
+        if (block.timestamp < maturity) {
+            revert Maturity(maturity);
+        }
+        // Transfer logic
+        // If holder is msg.sender, skip approval check
+        if (holder == msg.sender) {
+            redeemer.authRedeem(protocol, underlying, maturity, msg.sender, receiver, previewAmount);
+            return previewAmount;
+        }
+        else {
+            uint256 allowed = allowance[holder][msg.sender];
+            if (allowed >= previewAmount) {
+                revert Approvals(allowed, previewAmount);
+            }
+            allowance[holder][msg.sender] -= previewAmount;
+            redeemer.authRedeem(protocol, underlying, maturity, holder, receiver, previewAmount); 
+            return previewAmount;
+        }
+    }
+    /// @notice At or after maturity, burns exactly `principalAmount` of Principal Tokens from `owner` and sends underlyingAmount of underlying tokens to `receiver`.
+    /// @param principalAmount The amount of principal tokens being redeemed
+    /// @param receiver The receiver of the underlying tokens being withdrawn
+    /// @return underlyingAmount The amount of underlying tokens distributed by the redemption
+    function redeem(uint256 principalAmount, address receiver, address holder) external override returns (uint256 underlyingAmount){
+        // If maturity is not yet reached
+        if (block.timestamp < maturity) { revert Maturity(maturity); }
+        // some 5095 tokens may have custody of underlying and can can just burn PTs and transfer underlying out, while others rely on external custody
+        if (holder == msg.sender) {
+            return redeemer.authRedeem(protocol, underlying, maturity, msg.sender, receiver, principalAmount);
+        }
+        else {
+            uint256 allowed = allowance[holder][msg.sender];
+            if (allowed >= principalAmount) { revert Approvals(allowed, principalAmount); }
+            allowance[holder][msg.sender] -= principalAmount;  
+            return redeemer.authRedeem(protocol, underlying, maturity, holder, receiver, principalAmount);
+        }
+    }
+    /// @param f Address to burn from
+    /// @param a Amount to burn
+    function burn(address f, uint256 a) external onlyAdmin(address(redeemer)) returns (bool) {
+        _burn(f, a);
+        return true;
+    }
 
-  function burn(address f, uint256 a) public returns(bool) {
-    burnCalled[f] = a;
-    return burnReturn;
-  }
+    /// @param t Address recieving the minted amount
+    /// @param a The amount to mint
+    function mint(address t, uint256 a) external onlyAdmin(address(redeemer)) returns (bool) {
+        _mint(t, a);
+        return true;
+    }
 
-  function mintReturns(bool b) public {
-    mintReturn = b;
-  }
-
-  function mint(address f, uint256 a) public returns(bool) {
-    mintCalled[f] = a;
-    return mintReturn;
-  }
-
-  function underlyingReturns(address u) public {
-    underlyingReturn = u;
-  }
-  
-  // override what would be the autogenerated getter...
-  function underlying() public view returns (address) {
-    return underlyingReturn;
-  }
-
-  function maturityReturns(uint256 n) public {
-    maturityReturn = n;
-  }
-  
-  // override what would be the autogenerated getter...
-  function maturity() public view returns (uint256) {
-    return maturityReturn;
-  }
-
-  function transferFrom(address f, address t, uint256 a) public returns (bool) {
-    TransferFromArgs memory args;
-    args.to = t;
-    args.amount = a;
-    transferFromCalled[f] = args;
-    return transferFromReturn;
-  }
-
-  function transferFromReturns(bool b) public {
-    transferFromReturn = b;
+    modifier onlyAdmin(address a) {
+    if (msg.sender != a) { revert Authorized(a); }
+    _;
   }
 }
