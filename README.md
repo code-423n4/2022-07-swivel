@@ -26,6 +26,10 @@ Our Testing Suite: https://github.com/Swivel-Finance/gost/tree/v3
 
 Old v2 Overview (ETHOnline): https://www.youtube.com/watch?v=hI0Uwd4Xayg 
 
+V2 Code4rena Audit: https://code423n4.com/reports/2021-09-swivel/ 
+
+V2 Certik "Audit": https://www.certik.com/projects/swivel-finance
+
 | **Contracts**    | **Link** | **LOC** | **LIBS** | **External** | **Description** |
 |--------------|------|------|------|------|------|
 | Swivel       |[Link](https://github.com/code-423n4/2022-07-swivel/blob/main/Swivel/Swivel.sol)| 765 | [Interfaces.sol](https://github.com/code-423n4/2022-07-swivel/blob/main/Swivel/Interfaces.sol), [Hash.sol](https://github.com/code-423n4/2022-07-swivel/blob/main/Swivel/Hash.sol), [Sig.sol](https://github.com/code-423n4/2022-07-swivel/blob/main/Swivel/Sig.sol), [Safe.sol](https://github.com/code-423n4/2022-07-swivel/blob/main/Swivel/Safe.sol) | [CToken.sol](https://github.com/compound-finance/compound-protocol/blob/master/contracts/CToken.sol), [AToken.sol](https://github.com/aave/protocol-v2/blob/master/contracts/protocol/tokenization/AToken.sol), [EToken.sol](https://github.com/euler-xyz/euler-contracts/blob/master/contracts/modules/EToken.sol), [yToken.sol](https://github.com/yearn/yearn-vaults/blob/main/contracts/yToken.sol), [ERC-4626](https://github.com/Rari-Capital/solmate/blob/main/src/mixins/ERC4626.sol)  | Handles custody and validation and acts as the primary external interface.  |
@@ -34,9 +38,18 @@ Old v2 Overview (ETHOnline): https://www.youtube.com/watch?v=hI0Uwd4Xayg
 | VaultTracker |[Link](https://github.com/code-423n4/2022-07-swivel/blob/main/VaultTracker/VaultTracker.sol)| 252 | Same as Marketplace.sol | Same as Swivel.sol | Handles user yield tracking. |
 | ZcToken |[Link](https://github.com/code-423n4/2022-07-swivel/blob/main/Creator/ZcToken.sol)| 156 | [IERC-5095](https://github.com/code-423n4/2022-07-swivel/blob/main/Creator/IERC5095.sol), [IRedeemer](https://github.com/code-423n4/2022-07-swivel/blob/main/Creator/IRedeemer.sol), [Interfaces.sol](https://github.com/code-423n4/2022-07-swivel/blob/main/Creator/Interfaces.sol) and Marketplace.sol Libs | Same as Swivel.sol | ERC-5095 Principal Token |
 
+# **Compiling / Testing**
+Each contract has all dependencies included in its folder. Compilation is as simple as pulling a folder into whatever framework you use. Structure is meant to be as generic as possible for various testing frameworks.
+
+On our end we use a compilation / testing suite `GOST` which integrates directly with GETH for all EVM interaction.
+
+**GOST**: [Link](https://github.com/Swivel-Finance/gost/tree/libfuse-libcompound#compiling-and-testing-your-contracts)
+
+Ensure you are on the v3 branch, and follow the instructions to build and test our contracts directly using GETH / GOST.
+
 # **New In v3**
 
-As a general focus of our audit, we would like to highlight our new features in Swivel v3. 
+As a general focus of our audit, we would like to highlight our new features in Swivel v3.
 
 ## **Protocol Integrations**
 
@@ -48,7 +61,7 @@ The focus of v3 is to open our protocol to nearly all large money-market integra
 
 ## **5095**
 
-Another focus of v3 was the integration of [EIP-5095](https://github.com/ethereum/EIPs/pull/5095). We wanted to ensure compliance and demonstrate how one could integrate a 5095 with some backwards compatable infrastructure for authorized redemptions. That said, 5095 is in flux and not finalized and 100% compliance is not to be expected. (e.g. Our previews currently return 0 before maturity, an old version of 5095.) This largely includes:
+Another focus of v3 was the integration of [EIP-5095](https://github.com/ethereum/EIPs/pull/5095). We wanted to ensure compliance and demonstrate how one could integrate a 5095 with some backwards compatible infrastructure for authorized redemptions. That said, 5095 is in flux and not finalized and 100% compliance is not to be expected. (e.g. Our previews currently return 0 before maturity, an old version of 5095.) This largely includes:
 - A `ZcToken.sol` which follows the 5095 interface, and redemptions that call an authorized `IRedeemer.authRedeem`
 - The addition of `MarketPlace.authRedeem` which acts as our IRedeemer and burns zcTokens then calls and authorized `Swivel.authRedeem`
 - The addition of `Swivel.authRedeem` which withdraws from an external protocol and then transfers an ERC20 out
@@ -67,13 +80,18 @@ When it comes to input sanitization, assuming there are no externalities, we err
 - Checking for input amounts of 0
 - Or any similar input sanitization.
 
-## **Admin Priveleges**
+## **Admin Privileges**
 
-We strive to ensure users can feel comfortable that there will not be rugs of their funds. We also feel strongly that there also need to be training wheels with new launches, especially when it comes to the integration of numeruous external protocols. 
+We strive to ensure users can feel comfortable that there will not be rugs of their funds. We also feel strongly that there also need to be training wheels with new launches, especially when it comes to the integration of numerous external protocols. 
 
 That said, we retain multiple methods for approvals / withdrawals / fees / pausing gated behind admin methods to ensure the protocol can effectively safeguard user funds during the early operation of the protocol. For the most part these methods have delays to give time for users to exit. Further, the admin will always be a multi-sig.
 
 With all this established, we are likely contesting / rejecting most admin centralization issues, unless there are remediations which do not break the ethos of our early / safeguarded launch.
+
+## **Scope**
+The scope of this audit includes our entire codebase, however the purpose of the audit is to identify new issues introduced in our v3. 
+
+For a full diff of our v2 you can compare this repo with the locked Swivel v2 contracts: https://github.com/Swivel-Finance/swivel
 
 ## **Areas of Concern**:
 There are a few primary targets for concern:
@@ -108,7 +126,7 @@ A comprehensive overview of all our errors is available in the `errors.txt` file
 # **Smart Contracts** 
 
 ## **Swivel:**
-Swivel.sol handles all fund custody, and most all user interaction methods are on Swivel.sol (`initiate`,`exit`,`splitUnderying`,`combineTokens`, `redeemZcTokens`, `redeemVaultInterest`). We categorize all order interactions as either `payingPremium` or `receivingPremium` depending on the params (`vault` & `exit`) of an order filled, and whether a user calls `initiate` or `exit`. 
+Swivel.sol handles all fund custody, and most all user interaction methods are on Swivel.sol (`initiate`,`exit`,`splitUnderlying`,`combineTokens`, `redeemZcTokens`, `redeemVaultInterest`). We categorize all order interactions as either `payingPremium` or `receivingPremium` depending on the params (`vault` & `exit`) of an order filled, and whether a user calls `initiate` or `exit`. 
 
 For example, if `vault` = true, the maker of an order is interacting with their vault, and if `exit` = true, they are selling notional (nTokens) and would be `receivingPremium`. Alternatively, if `vault` = false, and `exit` = false, the maker is initiating a fixed yield, and thus also splitting underlying and selling nTokens, `receivingPremium`. 
 
@@ -124,10 +142,10 @@ Outside of this sorting, the basic order interaction logic is:
 4. Deposit/Withdraw from compound and/or exchange/mint/burn zcTokens and nTokens through marketplace.sol
 5. Transfer fees
 
-Other methods (`splitUnderying`,`combineTokens`, `redeemZcTokens`, `redeemVaultInterest`) largely just handle fund custody from underlying protocols, and shoot burn/mint commands to marketplace.sol.
+Other methods (`splitUnderlying`,`combineTokens`, `redeemZcTokens`, `redeemVaultInterest`) largely just handle fund custody from underlying protocols, and shoot burn/mint commands to marketplace.sol.
 
 ## **Marketplace:**
-Marketplace.sol acts as the central hub for tracking all markets (defined as an asset-matury pair). Markets are stored in a mapping and admins are the only ones that can create markets.
+Marketplace.sol acts as the central hub for tracking all markets (defined as an asset-maturity pair). Markets are stored in a mapping and admins are the only ones that can create markets.
 
 Any orderbook interactions that require zcToken or nToken transfers are handled through marketplace burn/mints in order to avoid requiring approvals.
 
@@ -146,10 +164,3 @@ Every time a user either increases/decreases their nToken balance (`vault.notion
 Creator.sol is a contract to eat the bytecode load of new ZcToken and VaultTracker market deployment. 
 
 Creator has one method for the creation of new markets, which can only be called by `Marketplace.sol`.
-
-# **Compiling / Testing**
-We use a compilation / testing suite `GOST` which integrates directly with GETH:
-
-**GOST**: [Link](https://github.com/Swivel-Finance/gost/tree/libfuse-libcompound#compiling-and-testing-your-contracts)
-
-Ensure you are on the v3 branch, and follow the instructions to build and test our contracts directly using GETH / GOST.
