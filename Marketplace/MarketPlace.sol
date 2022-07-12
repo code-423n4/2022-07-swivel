@@ -95,13 +95,13 @@ contract MarketPlace {
     if (block.timestamp < m) { revert Exception(24, block.timestamp, m, address(0), address(0)); }
 
     // set the base maturity cToken exchange rate at maturity to the current cToken exchange rate
-    uint256 rate = Compounding.exchangeRate(p, market.cTokenAddr);
-    markets[p][u][m].maturityRate = rate;
+    uint256 exchangeRate = Compounding.exchangeRate(p, market.cTokenAddr);
+    markets[p][u][m].maturityRate = exchangeRate;
 
     // NOTE we don't check the return of this simple operation
-    IVaultTracker(market.vaultTracker).matureVault(rate);
+    IVaultTracker(market.vaultTracker).matureVault(exchangeRate);
 
-    emit Mature(p, u, m, rate, block.timestamp);
+    emit Mature(p, u, m, exchangeRate, block.timestamp);
 
     return true;
   }
@@ -158,8 +158,7 @@ contract MarketPlace {
       return (a);
     } else {
 
-      if (!IZcToken(market.zcToken).burn(f, a)) { revert Exception(29, 0, 0, address(0), address(0));
-      }
+      if (!IZcToken(market.zcToken).burn(f, a)) { revert Exception(29, 0, 0, address(0), address(0)); }
 
       uint256 amount = calculateReturn(p, u, m, a);
       ISwivel(swivel).authRedeem(p, u, market.cTokenAddr, t, amount);
@@ -179,12 +178,10 @@ contract MarketPlace {
 
     // if the market has not matured, mature it and redeem exactly the amount
     if (market.maturityRate == 0) {
-      if (!matureMarket(p, u, m)) { revert Exception(30, 0, 0, address(0), address(0));
-      }
+      if (!matureMarket(p, u, m)) { revert Exception(30, 0, 0, address(0), address(0)); }
     }
 
-    if (!IZcToken(market.zcToken).burn(t, a)) { revert Exception(29, 0, 0, address(0), address(0));
-    }
+    if (!IZcToken(market.zcToken).burn(t, a)) { revert Exception(29, 0, 0, address(0), address(0)); }
 
     emit RedeemZcToken(p, u, m, t, a);
 
@@ -218,9 +215,9 @@ contract MarketPlace {
   function calculateReturn(uint8 p, address u, uint256 m, uint256 a) internal view returns (uint256) {
     Market memory market = markets[p][u][m];
 
-    uint256 rate = Compounding.exchangeRate(p, market.cTokenAddr);
+    uint256 exchangeRate = Compounding.exchangeRate(p, market.cTokenAddr);
 
-    return (a * rate) / market.maturityRate;
+    return (a * exchangeRate) / market.maturityRate;
   }
 
   /// @notice Return the compounding token address for a given market
@@ -235,7 +232,7 @@ contract MarketPlace {
   /// @notice Return the exchangeRate for a given protocol's compounding token
   /// @param p Protocol Enum value associated with this market
   /// @param c Compounding token address associated with the market
-  function exchangeRate(uint8 p, address c) external view returns (uint256) {
+  function getExchangeRate(uint8 p, address c) external view returns (uint256) {
       return Compounding.exchangeRate(p, c);
   }
 
