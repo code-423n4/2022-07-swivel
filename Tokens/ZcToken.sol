@@ -44,7 +44,7 @@ contract ZcToken is Erc20, IERC5095 {
         if (block.timestamp < maturity) {
             return 0;
         }
-        return (principalAmount * Compounding.getExchangeRate(protocol, cToken) / IRedeemer(redeemer).markets(protocol, underlying, maturity).maturityRate);
+        return (principalAmount * IRedeemer(redeemer).getExchangeRate(protocol, cToken) / IRedeemer(redeemer).markets(protocol, underlying, maturity).maturityRate);
     }
     /// @notice Post maturity converts a desired amount of underlying tokens returned to principal tokens needed. Returns 0 pre-maturity.
     /// @param underlyingAmount The amount of underlying tokens to convert
@@ -53,7 +53,7 @@ contract ZcToken is Erc20, IERC5095 {
         if (block.timestamp < maturity) {
             return 0;
         }
-        return (underlyingAmount * IRedeemer(redeemer).markets(protocol, underlying, maturity).maturityRate / Compounding.getExchangeRate(protocol, cToken));
+        return (underlyingAmount * IRedeemer(redeemer).markets(protocol, underlying, maturity).maturityRate / IRedeemer(redeemer).getExchangeRate(protocol, cToken));
     }
     /// @notice Post maturity calculates the amount of principal tokens that `owner` can redeem. Returns 0 pre-maturity.
     /// @param owner The address of the owner for which redemption is calculated
@@ -71,7 +71,7 @@ contract ZcToken is Erc20, IERC5095 {
         if (block.timestamp < maturity) {
             return 0;
         }
-        return (principalAmount * Compounding.getExchangeRate(protocol, cToken) / IRedeemer(redeemer).markets(protocol, underlying, maturity).maturityRate);
+        return (principalAmount * IRedeemer(redeemer).getExchangeRate(protocol, cToken) / IRedeemer(redeemer).markets(protocol, underlying, maturity).maturityRate);
     }
     /// @notice Post maturity calculates the amount of underlying tokens that `owner` can withdraw. Returns 0 pre-maturity.
     /// @param  owner The address of the owner for which withdrawal is calculated
@@ -80,7 +80,7 @@ contract ZcToken is Erc20, IERC5095 {
         if (block.timestamp < maturity) {
             return 0;
         }
-        return (balanceOf[owner] * Compounding.getExchangeRate(protocol, cToken) / IRedeemer(redeemer).markets(protocol, underlying, maturity).maturityRate);
+        return (balanceOf[owner] * IRedeemer(redeemer).getExchangeRate(protocol, cToken) / IRedeemer(redeemer).markets(protocol, underlying, maturity).maturityRate);
     }
     /// @notice Post maturity simulates the effects of withdrawal at the current block. Returns 0 pre-maturity.
     /// @param underlyingAmount the amount of underlying tokens withdrawn in the simulation
@@ -89,7 +89,7 @@ contract ZcToken is Erc20, IERC5095 {
         if (block.timestamp < maturity) {
             return 0;
         }
-        return (underlyingAmount * IRedeemer(redeemer).markets(protocol, underlying, maturity).maturityRate / Compounding.getExchangeRate(protocol, cToken));
+        return (underlyingAmount * IRedeemer(redeemer).markets(protocol, underlying, maturity).maturityRate / IRedeemer(redeemer).getExchangeRate(protocol, cToken));
     }
     /// @notice At or after maturity, Burns principalAmount from `owner` and sends exactly `underlyingAmount` of underlying tokens to `receiver`.
     /// @param underlyingAmount The amount of underlying tokens withdrawn
