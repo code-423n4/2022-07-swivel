@@ -89,9 +89,20 @@ That said, we retain multiple methods for approvals / withdrawals / fees / pausi
 With all this established, we are likely contesting / rejecting most admin centralization issues, unless there are remediations which do not break the ethos of our early / safeguarded launch.
 
 ## **Scope**
-The scope of this audit includes our entire codebase, however the purpose of the audit is to identify new issues introduced in our v3. 
+The scope of this audit includes our core contracts, however the purpose of the audit is to identify new issues introduced in our v3. 
 
 For a full diff of our v2 you can compare this repo with the locked Swivel v2 contracts: https://github.com/Swivel-Finance/swivel
+
+So the only things explicitly NOT in scope:
+- Details of 5095 implementation (the EIP isnt final yet)
+- A few external Libs: 
+        - FixedPointMathLib
+        - LibCompound
+        - LibFuse
+        - Safe.sol
+- Some older stuff not worth a review:
+        - Hash.sol
+        - Sig.sol
 
 ## **Areas of Concern**:
 There are a few primary targets for concern:
