@@ -1,0 +1,305 @@
+==============================================================
+Guild: Code4rena
+Channel: ARCHIVE-Q3-2022 / ☑swivel-jul12
+==============================================================
+
+[07/12/2022 5:34 PM] kartoonjoy
+👋 Hello and welcome to the contest channel for the $35K USDC **Swivel v3** contest!
+
+📆 Contest opens 07/12/2022 8:00 PM (20:00 UTC) and runs through 07/15/2022 8:00 PM (20:00 UTC) (3 days).
+
+Please give a warm welcome to the Swivel team, particularly @Julian | Illuminate, @sourabh and @rob_rob, who will be available for questions either here in the channel or via DM.
+
+We'll be posting relevant links, documentation, etc. here, so if you intend to participate in this contest, consider enabling notifications for this channel. 🐺 ⏰
+
+Contest Page: https://code4rena.com/contests/2022-07-swivel-v3-contest
+
+{Embed}
+https://code4rena.com/contests/2022-07-swivel-v3-contest
+Code4rena Swivel v3 contest
+$35,000 USDC
+12 July 2022—15 July 2022
+Code4rena - ARCHIVE-Q3-2022 - ☑swivel-jul12 [996465101697712188].txt_Files/f6c9a5bc-69a1-4f9b-a155-e2ad0302da03-34A7F
+
+
+[07/12/2022 6:31 PM] Julian | Illuminate#0001
+:peepoWave: hey guys! Our 2nd time in the Arena with Swivel, and this time we're largely focused on the changes we've introduced in our v3
+
+
+[07/12/2022 6:33 PM] Julian | Illuminate#0001
+**New in v3:**
+The core difference really is the introduction of `p` (protocol) in our order struct, as well as the abstraction of external methods for ctoken.`withdraw` `deposit` and `exchangeRate`
+
+What that does is let us integrate with more protocols (aave, yearn, euler, etc.,), meaning we're hoping to test those external interface interactions
+
+
+[07/12/2022 6:36 PM] Julian | Illuminate#0001
+**Other new additions to look at:**
+- Swivel.sol and Marketplace.sol `authRedeem` to enable external 5095 redemptions
+- Marketplace `createMarket` split actual contract deployment into Creator.sol to open up bytecode space
+- Addition of delayed workflow to fee changes, approvals
+
+
+[07/12/2022 8:02 PM] Julian | Illuminate#0001
+Contest now LIVE!
+
+Feel free to reach out to myself, @rob_rob or @sourabh with questions / thoughts!
+
+{Reactions}
+🎉 (14) 👌 (9) 
+
+[07/12/2022 8:38 PM] Franfran#5067
+Hey guys !
+
+{Reactions}
+peepoWave (6) 
+
+[07/12/2022 11:02 PM] exd0tpy
+hm
+
+
+[07/13/2022 12:30 AM] benbaessler
+hey everyone! 👋
+
+{Reactions}
+👋 (3) peepoShy (2) 
+
+[07/13/2022 5:51 AM] p12473
+Hey Julian, I'm a little confused as to which contracts are in / out of scope. For example, the table in the README mentions `Marketplace.sol` but based on what I've read in the README, it seems the libs e.g. `Compounding.sol` are also part of the scope?
+
+{Reactions}
+same (2) 
+
+[07/13/2022 7:06 AM] Julian | Illuminate#0001
+For sure! I'd 100% clarify that `Compounding.sol` is in scope, as its where our abstraction of `exchangeRate` sits
+
+
+[07/13/2022 7:06 AM] Julian | Illuminate#0001
+Beyond that I'd say most everything other than some of the implementation details of our ERC-5095 are in scope for reports
+
+
+[07/13/2022 7:07 AM] Julian | Illuminate#0001
+And our focus is primarily on the addition of `p` to the order structs, and the external abstractions: 
+- the `deposit` and `withdraw` abstractions in Swivel.sol
+- the `Compounding.sol` library
+
+
+[07/13/2022 7:11 AM] Julian | Illuminate#0001
+This is where the impactful changes of our v3 sit, which are relatively compartmentalized.
+(Otherwise we'd have done a longer audit)
+
+That said, it'd be silly to not provide context with the wider codebase so its all included in scope for reports
+
+{Reactions}
+💯 
+
+[07/13/2022 7:14 AM] Julian | Illuminate#0001
+**So the only things explicitly *NOT* in scope:**
+- Details of 5095 implementation (the EIP isnt final yet)
+- A few external Libs: 
+        - FixedPointMathLib
+        - LibCompound
+        - LibFuse
+        - Safe.sol
+- Some older stuff not worth a review:
+        - Hash.sol
+        - Sig.sol
+
+{Reactions}
+🤙 👍 (2) 
+
+[07/13/2022 9:02 AM] p12473
+Thanks a lot ser 🤝
+
+
+[07/13/2022 12:33 PM] benbaessler
+So `Swivel.sol` is in scope, right?
+
+{Reactions}
+NODDERS 
+
+[07/13/2022 1:20 PM] nine_december
+Hi! Sent u dm request!
+
+
+[07/13/2022 2:13 PM] sourabh.
+Yes, Swivel.sol is in scope
+
+{Reactions}
+👍 
+
+[07/13/2022 3:30 PM] rob_rob#1703
+👀
+
+
+[07/13/2022 5:49 PM] rob_rob#1703
+I'd echo what @Julian | Illuminate pointed out in Swivel.sol - the `deposit` and `withdraw` abstractions which utilize `p` to determine appropriate action
+
+
+[07/13/2022 9:23 PM] benbaessler
+got it, thanks! 👍
+
+
+[07/14/2022 9:40 PM] acegawd
+DM @Julian | Illuminate
+
+{Reactions}
+OK 
+
+[07/15/2022 3:02 PM] ak19966
+hi.. can I DM you ?
+
+
+[07/15/2022 3:29 PM] Julian | Illuminate#0001
+for sure
+
+
+[07/15/2022 5:20 PM] acegawd
+DM @Julian | Illuminate
+
+
+[07/15/2022 7:27 PM] Julian | Illuminate#0001
+👀
+
+{Reactions}
+👍 
+
+[07/15/2022 8:02 PM] C4
+**🚨 CONTEST ALERT**
+
+@🐺wardens The **Swivel v3** contest is now closed! Huge thanks to everyone who participated 🔍, whether you submitted a finding or not.
+
+What's next: the **Swivel** team will review the findings over the next couple of days, and then we'll pass them off to the judge. Keep an eye on #📢announcements for regular updates on how the contest is progressing through awarding 🤑🏆, judging 🧑‍⚖️ and reporting 📜. Feel free to ping a gardener if you have questions along the way!
+
+{Reactions}
+swivelHeat 
+
+[07/17/2022 11:20 AM] CRYP70#8985
+Many thanks to the devs and staff for hosting the comp!  😁
+
+{Reactions}
+🚀 (3) swintensifies (2) PeepoLove (2) 
+
+[08/30/2022 4:09 PM] Ignacio#9604
+any update?
+
+
+[08/30/2022 4:13 PM] itsmetechjay
+Swivel should be wrapping up post-judging QA soon. If all goes well, we will move forward with calculating and announcing awards.
+
+{Reactions}
+🚀 (3) 
+
+[09/07/2022 11:40 PM] itsmetechjay
+🤑 🎉 Awards for **Swivel v3**:
+
+$3,503.49 USDC » @scaraven 
+$3,352.01 USDC » @Franfran 
+$3,285.36 USDC » GimelSec (@rayn | GimelSec, @sces60107 | GimelSec)
+$3,240.28 USDC » @panprog 
+$2,386.05 USDC » @0x52 
+$2,358.51 USDC » @thinklab 
+$2,234.68 USDC » @bardamu 
+$2,234.68 USDC » @++devtooligan 
+$2,104.08 USDC » @hansfriese 
+$1,125.16 USDC » @csanuragjain 
+$1,098.49 USDC » @jonatascm 
+$1,049.91 USDC » @P12473 
+$1,049.88 USDC » @cccz 
+$733.30 USDC » @joestakey 
+$308.45 USDC » @Bahurum 
+$225.51 USDC » @Django | Saloon Finance 
+$216.23 USDC » @c3phas 
+$177.79 USDC » @rokinot 
+$164.06 USDC » @0x1f8b 
+$157.79 USDC » @sashik_eth 
+$155.43 USDC » @ronnyx2017 | Offside Labs 
+$151.17 USDC » @bin2chen 
+$151.15 USDC » @Picodes | Angle 
+$150.95 USDC » @madwookie 
+$130.39 USDC » @benbaessler 
+$123.86 USDC » @rbserver 
+$106.88 USDC » @zhuXKET 
+$106.88 USDC » @auditor0517 
+$106.28 USDC » @kyteg 
+$103.41 USDC » @Bnke 
+$102.64 USDC » @m_Rassska 
+$102.24 USDC » @Meera 
+$98.48 USDC » @hake | SmartSek 
+$93.76 USDC » @simon135 
+$92.85 USDC » @8olidity 
+$81.45 USDC » @robee 
+$77.05 USDC » @0xNazgul 
+$76.56 USDC » @fatherOfBlocks 
+$76.37 USDC » @__141345__ 
+$75.97 USDC » @DefSec 
+$73.91 USDC » @_Adam 
+$73.08 USDC » @Soosh 
+$72.24 USDC » @Sm4rty 
+$71.86 USDC » @slywaters 
+$71.15 USDC » @Waze 
+$70.92 USDC » @Funen 
+$70.44 USDC » @ElKu 
+$70.38 USDC » @Kaiziron 
+$70.06 USDC » @JC
+$70.04 USDC » @ReyAdmirado 
+$69.99 USDC » Avci (@0xArshia, @0xdanial)
+$69.98 USDC » @PENGUN 
+$48.55 USDC » @arcoun 
+$48.55 USDC » @!0xcaventa 
+$48.55 USDC » @Roman 
+$46.82 USDC » @Chom 
+$44.78 USDC » @cryptphi 
+$44.50 USDC » @0xNineDec 
+$44.28 USDC » @gogo 
+$44.27 USDC » @sach1r0 
+$44.27 USDC » @aysha 
+$44.26 USDC » @ak1 
+$44.26 USDC » @Junnon 
+$44.26 USDC » @PaludoX0 
+$44.25 USDC » @rishabh 
+$44.25 USDC » @pashov 
+$44.25 USDC » @mektigboy 
+$33.75 USDC » @ajtra 
+$30.57 USDC » @0xsam 
+$26.08 USDC » @durianSausage 
+$25.90 USDC » @0X040 
+$25.77 USDC » @TomJ 
+$25.74 USDC » @samruna 
+$25.72 USDC » @Fitraldys 
+$25.71 USDC » @karanctf 
+$25.71 USDC » @Ignacio 
+$25.71 USDC » @CRYP70 
+$25.71 USDC » @code-cipher 
+
+🏁 Findings summary
+---------------------------
+High risk findings: 2 total, 1 unique
+Med risk findings: 36 total, 12 unique
+Gas optimization reports: 44
+QA reports: 55
+
+Awards will be distributed on Polygon within the next 1-2 weeks. Congratulations all! 💸 💸 💸
+
+{Reactions}
+🚀 (5) swintensifies (4) swivelHeat (4) peepoParty (3) swivelSpin (3) peepoLurk (3) comfy (3) 
+
+[09/08/2022 12:12 AM] CRYP70#8985
+My first payment! 😁 twenty five dollerydoos - thank you!
+
+{Reactions}
+🎉 (20) 💸 (10) badgerchad (4) 
+
+[09/23/2022 9:48 AM] caventa
+I got 48 USD for my first try. Thanks and it really motivates me.
+
+{Reactions}
+👏 (2) 
+
+[09/30/2022 6:09 AM] Junnon#3182
+can i ask something to judges?
+
+
+==============================================================
+Exported 34 message(s)
+==============================================================
